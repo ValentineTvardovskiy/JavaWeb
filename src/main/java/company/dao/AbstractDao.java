@@ -14,9 +14,28 @@ public abstract class AbstractDao<T, Long> implements GenericDao<T, Long> {
     }
 
     @Override
-    public T create(T t) {
-        return null;
+    public void create(T t) {
+        String query = createInsertStatementSql();
+        Class<?> zclass = t.getClass();
+        PreparedStatement statement;
+        try {
+            statement = connection.prepareStatement(query);
+            Field[] fields = zclass.getDeclaredFields();
+            for (int i = 0; i < fields.length; i++) {
+                Field field = fields[i];
+                field.setAccessible(true);
+                Object value = field.get(t);
+                statement.setObject((i + 1), value);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
+
+
 
     @Override
     public T read(Long id) {
@@ -99,7 +118,7 @@ public abstract class AbstractDao<T, Long> implements GenericDao<T, Long> {
                 || type==char.class || type==short.class);
     }
 
-    public static Class<?> boxPrimitiveClass(Class<?> type)
+    private static Class<?> boxPrimitiveClass(Class<?> type)
     {
         if(type==int.class){return Integer.class;}
         else if(type==long.class){return java.lang.Long.class;}
@@ -114,5 +133,25 @@ public abstract class AbstractDao<T, Long> implements GenericDao<T, Long> {
             String string="class '" + type.getName() + "' is not a primitive";
             throw new IllegalArgumentException(string);
         }
+    }
+
+    private String createInsertStatementSql()
+    {
+        Class<?> zclass = this.getClass();
+        StringBuilder fields= new StringBuilder();
+        StringBuilder vars= new StringBuilder();
+        for(Field field : zclass.getDeclaredFields())
+        {
+            String name=field.getName();
+            if(fields.length()>1)
+            {
+                fields.append(",");
+                vars.append(",");
+            }
+            fields.append(name);
+            vars.append("?");
+        }
+        String Sql="INSERT INTO " + this.getClass().getName() + "(" + fields.toString() + ") VALUES(" + vars.toString() + ")";
+        return Sql;
     }
 }

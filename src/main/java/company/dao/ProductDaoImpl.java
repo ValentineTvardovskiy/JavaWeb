@@ -18,7 +18,6 @@ public class ProductDaoImpl extends AbstractDao<Product, Integer> implements Pro
 
         String query = "INSERT INTO PRODUCTS (NAME, PRICE, DESCRIPTION) VALUES (?, ?, ?);";
         PreparedStatement statement;
-
         try {
             statement = connection.prepareStatement(query);
             statement.setString(1, product.getName());

@@ -2,15 +2,15 @@ package company.dao;
 
 import java.util.List;
 
-public interface GenericDao<T, ID> {
+public interface GenericDao<T, Long> {
 
     T create(T t);
 
-    T read(ID id);
+    T read(Long id);
 
     T update(T t);
 
-    void delete(ID t);
+    void delete(Long id);
 
     List<T> readAll();
 }

@@ -8,7 +8,7 @@ public interface GenericDao<T, Long> {
 
     T read(Long id);
 
-    T update(T t);
+    T update(Long id);
 
     void delete(Long id);
 

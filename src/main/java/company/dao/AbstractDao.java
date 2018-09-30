@@ -43,7 +43,7 @@ public abstract class AbstractDao<T, Long> implements GenericDao<T, Long> {
         T result = null;
         try {
             statement = connection.prepareStatement(query);
-            statement.setLong(1, (long)id);
+            statement.setObject(1, id);
             resultSet = statement.executeQuery(query);
             while (resultSet.next()){
                 result = (T) this.getClass();
@@ -58,20 +58,50 @@ public abstract class AbstractDao<T, Long> implements GenericDao<T, Long> {
     }
 
     @Override
-    public T update(T t) {
-        String query;
-        PreparedStatement statement;
-        return null;
+    public T update(Long primaryKey) {
+        Class<?> zclass = this.getClass();
+        String Sql = createUpdateStatementSql(primaryKey.toString());
+        PreparedStatement statement = null;
+        try
+        {
+            System.out.println(Sql);
+            statement = connection.prepareStatement(Sql);
+            Field[] fields=zclass.getDeclaredFields();
+            int pkSequence=fields.length;
+            for(int i=0;i<fields.length;i++)
+            {
+                Field field=fields[i];
+                field.setAccessible(true);
+                Object value=field.get(this);
+                String name=field.getName();
+                if(name.equals(primaryKey))
+                {
+                    statement.setObject(pkSequence, value);
+                }
+                else
+                {
+                    statement.setObject(i, value);
+                }
+            }
+        }
+        catch(SecurityException | IllegalArgumentException
+                | IllegalAccessException e)
+        {
+            String string="Unable to create PreparedStatement: " + e.getMessage();
+            throw new RuntimeException(string,e);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return (T) statement;
     }
 
     @Override
-    public void delete(Long t) {
-        String query = "DELETE FROM " + this.getClass().getName() + " WHERE NAME = ?";
+    public void delete(Long id) {
+        String query = "DELETE FROM " + this.getClass().getName() + " WHERE ID = ?";
         PreparedStatement statement;
-        ResultSet resultSet;
         try {
             statement = connection.prepareStatement(query);
-            statement.setObject(1, t.getClass().getName());
+            statement.setObject(1, id);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -98,6 +128,9 @@ public abstract class AbstractDao<T, Long> implements GenericDao<T, Long> {
         }
         return result;
     }
+
+
+
 
     private static void loadResultSetIntoObject(ResultSet rst, Object object)
             throws IllegalArgumentException, IllegalAccessException, SQLException
@@ -163,7 +196,7 @@ public abstract class AbstractDao<T, Long> implements GenericDao<T, Long> {
         return Sql;
     }
 
-    private String createUpdateStatementSql( String primaryKey)
+    private String createUpdateStatementSql(String primaryKey)
     {
         Class<?> zclass = this.getClass();
         StringBuilder sets = new StringBuilder();

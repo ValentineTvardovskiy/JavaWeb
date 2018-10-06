@@ -1,9 +1,10 @@
 package company;
 
-import company.controller.GetAllCategoriesController;
-import company.controller.PageNotFoundController;
+import company.controller.*;
 import company.dao.CategoryDao;
 import company.dao.CategoryDaoImpl;
+import company.dao.UserDaoImpl;
+import company.service.UserServiceImpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,10 +17,11 @@ public class Factory {
     static {
         try {
             Class.forName("org.h2.Driver");
-            connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/test", "sa", "");
-        }catch (ClassNotFoundException e) {
+            connection = DriverManager.getConnection(
+                    "jdbc:h2:tcp://localhost/~/java-aug-18", "sa", "");
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -29,14 +31,33 @@ public class Factory {
     }
 
     public static GetAllCategoriesController getAllCategoriesController() {
-        return  new GetAllCategoriesController(getCategoryDaoImpl(getConnection()));
+        return new GetAllCategoriesController(getCategoryDaoIml(getConnection()));
     }
 
-    public static CategoryDaoImpl getCategoryDaoImpl(Connection connection) {
+    public static CategoryDaoImpl getCategoryDaoIml(Connection connection) {
         return new CategoryDaoImpl(connection);
     }
 
     public static PageNotFoundController getPageNotFoundController() {
-        return new  PageNotFoundController();
+        return new PageNotFoundController();
+    }
+
+    public static GetCategoryByIdController getGetCategoryByIdController() {
+        return new GetCategoryByIdController(getCategoryDaoIml(getConnection()));
+    }
+
+    public static LoginController getLoginPageController() {
+        return new LoginController(getUserService());
+    }
+    public static UserServiceImpl getUserService() {
+        return new UserServiceImpl(getUserDao());
+    }
+
+    public static RegisterController getRegisterController() {
+        return new RegisterController(getUserService());
+    }
+
+    public static UserDaoImpl getUserDao() {
+        return new UserDaoImpl(connection);
     }
 }

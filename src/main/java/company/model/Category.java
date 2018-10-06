@@ -1,50 +1,46 @@
 package company.model;
 
+import company.metadata.ColumnName;
+import company.metadata.TableName;
+
 import java.util.List;
 
-public class Category {
+@TableName("categories")
+public class Category extends AbstractModel{
+    private Long id;
 
-    private Long ID;
+    @ColumnName("CATEGORY_NAME")
     private String name;
     private List<Product> products;
 
-    public Category() {
+
+    public Category(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    public Category(Long ID, String name, List<Product> products) {
-        this.ID = ID;
+    public Category(Long id, String name, List<Product> products) {
+        this.id = id;
         this.name = name;
         this.products = products;
     }
 
-    public Long getID() {
-        return ID;
-    }
-
-    public void setID(Long ID) {
-        this.ID = ID;
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public List<Product> getProducts() {
         return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
     }
 
     @Override
     public String toString() {
         return "Category{" +
-                "ID=" + ID +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", products=" + products +
                 '}';

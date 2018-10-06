@@ -2,12 +2,13 @@ package company.controller;
 
 import company.dao.CategoryDao;
 import company.model.Category;
-import company.web.Requeast;
+import company.web.Request;
 import company.web.ViewModel;
 
+import java.sql.SQLException;
 import java.util.List;
 
-public class GetAllCategoriesController implements Controller{
+public class GetAllCategoriesController implements Controller {
 
     private final CategoryDao categoryDao;
 
@@ -16,12 +17,10 @@ public class GetAllCategoriesController implements Controller{
     }
 
     @Override
-    public ViewModel process(Requeast requeast) {
+    public ViewModel process(Request request) throws SQLException {
         List<Category> categories = categoryDao.findAll();
         ViewModel vm = ViewModel.of("categories");
         vm.addAttribute("categories", categories);
         return vm;
     }
-
-
 }

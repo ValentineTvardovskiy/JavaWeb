@@ -2,11 +2,12 @@ package company.dao;
 
 import company.model.Category;
 
+import java.sql.SQLException;
 import java.util.List;
 
-public interface CategoryDao{
+public interface CategoryDao {
 
-    Category findById(Long ID);
+    Category findById(Long id);
 
-    List<Category> findAll();
+    List<Category> findAll() throws SQLException;
 }

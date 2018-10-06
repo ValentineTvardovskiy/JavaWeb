@@ -1,12 +1,12 @@
 package company.controller;
 
-import company.web.Requeast;
+import company.web.Request;
 import company.web.ViewModel;
 
 public class PageNotFoundController implements Controller {
 
     @Override
-    public ViewModel process(Requeast requeast) {
+    public ViewModel process(Request request) {
         return ViewModel.of("404");
     }
 }

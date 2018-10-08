@@ -60,7 +60,7 @@ public class MainServlet extends HttpServlet {
 
     private void sendResponse(ViewModel vm, HttpServletRequest req,HttpServletResponse resp) throws ServletException, IOException {
         String redirectUrl = "/WEB-INF/views/%s.jsp";
-        vm.getModel().forEach(req:: setAttribute);
+        vm.getModel().forEach((k, v) -> req.setAttribute(k, v));
         addCockie(vm, resp);
         req.getRequestDispatcher(String.format(redirectUrl, vm.getView())).forward(req, resp);
 

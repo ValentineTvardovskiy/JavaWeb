@@ -1,6 +1,7 @@
 package company.service;
 
 import company.dao.UserDao;
+import company.model.Role;
 import company.model.User;
 
 import java.nio.charset.StandardCharsets;
@@ -20,7 +21,12 @@ public class UserServiceImpl implements UserService {
         String hashedPassword = hashPassword(user.getPassword());
         user.setPassword(hashedPassword);
         user.setToken(getToken());
+        user.addRole(getDefaultRole());
         return userDao.addUser(user);
+    }
+
+    private Role getDefaultRole() {
+        return Role.of(Role.RoleName.USER);
     }
 
     @Override

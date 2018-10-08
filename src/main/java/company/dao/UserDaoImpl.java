@@ -28,7 +28,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             statement.setString(5, user.getLastName());
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("User was not added");
+            throw new RuntimeException(e.getMessage());
         }
         return user;
     }

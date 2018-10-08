@@ -37,8 +37,14 @@ public class UserFilter implements Filter {
         String token = null;
         User user = null;
 
+        if (cookies == null) {
+            processUnautorized(request, response);
+            return;
+        }
+
         if(!protectedUriSet.contains(req.getRequestURI())) {
             processAutorized(request, response, chain);
+            return;
         }
 
         for(Cookie c : cookies) {

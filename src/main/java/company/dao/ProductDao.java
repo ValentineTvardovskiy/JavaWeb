@@ -11,5 +11,6 @@ public interface ProductDao {
     List<Product> findAll() throws SQLException;
 
     Product findByName(String name);
+    Product findById(Long id);
 
 }

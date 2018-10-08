@@ -3,6 +3,7 @@ package company;
 import company.controller.*;
 import company.dao.CategoryDao;
 import company.dao.CategoryDaoImpl;
+import company.dao.ProductDaoImpl;
 import company.dao.UserDaoImpl;
 import company.service.UserServiceImpl;
 
@@ -18,7 +19,7 @@ public class Factory {
         try {
             Class.forName("org.h2.Driver");
             connection = DriverManager.getConnection(
-                    "jdbc:h2:tcp://localhost/~/java-aug-18", "sa", "");
+                    "jdbc:h2:tcp://localhost/~/test", "sa", "");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -49,6 +50,7 @@ public class Factory {
     public static LoginController getLoginPageController() {
         return new LoginController(getUserService());
     }
+
     public static UserServiceImpl getUserService() {
         return new UserServiceImpl(getUserDao());
     }
@@ -59,5 +61,13 @@ public class Factory {
 
     public static UserDaoImpl getUserDao() {
         return new UserDaoImpl(connection);
+    }
+
+    public static ProductDaoImpl getProductDaoImpl(Connection connection) {
+        return new ProductDaoImpl(connection);
+    }
+
+    public static GetProductByIdController getGetProductByIdController() {
+        return new GetProductByIdController(getProductDaoImpl(connection));
     }
 }

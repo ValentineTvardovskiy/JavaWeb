@@ -7,7 +7,6 @@ import company.service.ProductService;
 import company.web.Request;
 import company.web.ViewModel;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class AddProductController implements Controller {

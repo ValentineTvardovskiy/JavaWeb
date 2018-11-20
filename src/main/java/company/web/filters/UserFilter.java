@@ -26,7 +26,7 @@ public class UserFilter implements Filter {
 
     private final Map<String, RoleName> protectedUriMap = new HashMap<>();
     private UserDao userDao;
-    private static final String COOKIE_NAME = "MATE";
+    public static final String COOKIE_NAME = "MATE";
 
     @Override
     public void init(FilterConfig filterConfig) {

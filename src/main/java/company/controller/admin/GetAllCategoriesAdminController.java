@@ -6,7 +6,6 @@ import company.model.Category;
 import company.web.Request;
 import company.web.ViewModel;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class GetAllCategoriesAdminController implements Controller {

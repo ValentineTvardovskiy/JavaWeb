@@ -17,7 +17,7 @@ public class GetAllCategoriesController implements Controller {
     }
 
     @Override
-    public ViewModel process(Request request) throws SQLException {
+    public ViewModel process(Request request) {
         List<Category> categories = categoryDao.findAll();
         ViewModel vm = ViewModel.of("categories");
         vm.addAttribute("categories", categories);

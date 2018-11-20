@@ -1,11 +1,10 @@
 package company;
 
 import company.controller.*;
+import company.controller.admin.AddProductController;
 import company.controller.admin.GetAllCategoriesAdminController;
-import company.dao.CategoryDao;
-import company.dao.CategoryDaoImpl;
-import company.dao.ProductDaoImpl;
-import company.dao.UserDaoImpl;
+import company.controller.admin.GetAllProductsAdminController;
+import company.dao.*;
 import company.service.ProductService;
 import company.service.ProductServiceImpl;
 import company.service.UserServiceImpl;
@@ -16,7 +15,7 @@ import java.sql.SQLException;
 
 public class Factory {
 
-    static Connection connection = null;
+    private static Connection connection;
 
     static {
         try {
@@ -35,48 +34,50 @@ public class Factory {
     }
 
     public static GetAllCategoriesController getAllCategoriesController() {
-        return new GetAllCategoriesController(getCategoryDaoIml(getConnection()));
+        return new GetAllCategoriesController(getCategoryDaoImpl(getConnection()));
     }
 
-    public static CategoryDaoImpl getCategoryDaoIml(Connection connection) {
+    public static GetAllCategoriesAdminController getAllCategoriesAdminController(String viewName) {
+        return new GetAllCategoriesAdminController(getCategoryDaoImpl(getConnection()), viewName);
+    }
+
+    public static GetAllProductsAdminController getAllProductsAdminController() {
+        return new GetAllProductsAdminController(getProductService(getConnection()));
+    }
+
+    public static AddProductController getAddProductController() {
+        return new AddProductController(getProductService(getConnection()));
+    }
+
+    public static ProductService getProductService(Connection connection) {
+        return new ProductServiceImpl(getProductDao(connection));
+    }
+
+    private static ProductDao getProductDao(Connection connection) {
+        return new ProductDaoImpl(connection);
+    }
+
+    public static CategoryDaoImpl getCategoryDaoImpl(Connection connection) {
         return new CategoryDaoImpl(connection);
-    }
-
-    public static PageNotFoundController getPageNotFoundController() {
-        return new PageNotFoundController();
-    }
-
-    public static GetCategoryByIdController getGetCategoryByIdController() {
-        return new GetCategoryByIdController(getCategoryDaoIml(getConnection()));
     }
 
     public static LoginController getLoginPageController() {
         return new LoginController(getUserService());
     }
 
-    public static UserServiceImpl getUserService() {
-        return new UserServiceImpl(getUserDao());
+    public static LogOutController getLogOutController() {
+        return new LogOutController();
     }
-
 
     public static RegisterController getRegisterController() {
         return new RegisterController(getUserService());
     }
 
+    public static UserServiceImpl getUserService() {
+        return new UserServiceImpl(getUserDao());
+    }
+
     public static UserDaoImpl getUserDao() {
-        return new UserDaoImpl(connection);
+        return new UserDaoImpl(getConnection());
     }
-
-    public static ProductDaoImpl getProductDaoImpl(Connection connection) {
-        return new ProductDaoImpl(connection);
-    }
-
-    public static GetProductByIdController getProductByIdController() {
-        return new GetProductByIdController(getProductDaoImpl(connection));
-    }
-
-    public static Controller getLogoutController() {
-        return new LogoutController();
-    }
-
 }

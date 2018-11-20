@@ -1,27 +1,26 @@
 package company.dao;
 
 
+import company.model.Role;
 import company.model.User;
 import static company.model.Role.RoleName.USER;
 
 import java.sql.*;
 
-public class UserDaoImpl extends AbstractDao<User> implements UserDao {
+public class UserDaoImpl implements UserDao {
+
+    private final Connection connection;
 
     public UserDaoImpl(Connection connection) {
-        super(connection);
+        this.connection = connection;
     }
-
 
     @Override
     public User addUser(User user) {
-
-        String userQuery = "INSERT INTO USERS (EMAIL, TOKEN, PASSWORD, FIRST_NAME, LAST_NAME) VALUES(?,?,?,?,?)";
-        String roleQuery = "INSERT INTO USER_TO_ROLE (FK_USER_ID, FK_ROLE_ID) VALUES(?,?)";
+        String userQuery = "INSERT INTO USERS (EMAIL, TOKEN, PASSWORD, FIRST_NAME, LAST_NAME) VALUES (?, ?, ?, ?, ?)";
+        String roleQuery = "INSERT INTO USER_TO_ROLE (FK_USER_ID, FK_ROLE_ID) VALUES (?, ?)";
         PreparedStatement userStatement;
-        PreparedStatement rolesStatement;
-
-
+        PreparedStatement roleStatement;
 
         try {
             connection.setAutoCommit(false);
@@ -33,78 +32,87 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             userStatement.setString(5, user.getLastName());
             userStatement.executeUpdate();
 
-            ResultSet rs = userStatement.getGeneratedKeys();
+            ResultSet resultSet = userStatement.getGeneratedKeys();
             long userId = 0;
-            if (rs.next()) {
-                userId = rs.getLong(1);
+            if (resultSet.next()) {
+                userId = resultSet.getLong(1);
             } else {
                 connection.rollback();
             }
 
-
-            rolesStatement = connection.prepareStatement(roleQuery);
-            rolesStatement.setLong(1, userId);
-            rolesStatement.setString(2, USER.toString());
-            rolesStatement.executeUpdate();
+            roleStatement = connection.prepareStatement(roleQuery);
+            roleStatement.setLong(1, userId);
+            roleStatement.setString(2, USER.toString());
+            roleStatement.executeUpdate();
 
             connection.commit();
         } catch (SQLException e) {
             try {
                 connection.rollback();
             } catch (SQLException e1) {
+                e1.printStackTrace();
                 throw new RuntimeException(e.getMessage());
             }
-
         }
-        return user;
-    }
-
-    @Override
-    public User findByEmail(String email) {
-        String query = "SELECT ID, EMAIL, TOKEN, PASSWORD, FIRST_NAME, LAST_NAME FROM USERS WHERE EMAIL = ?";
-        PreparedStatement statement;
-        ResultSet resultSet;
-        User user = null;
-        try {
-            statement = connection.prepareStatement(query);
-            statement.setString(1, email);
-            resultSet = statement.executeQuery();
-            user = resultSet.next() ? getObjectFromResultSet(resultSet) : null;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
         return user;
     }
 
     @Override
     public User findByToken(String token) {
-
-        String query = "SELECT ID, EMAIL, TOKEN, PASSWORD, FIRST_NAME, LAST_NAME FROM USERS WHERE TOKEN = ?";
-        PreparedStatement statement;
-        ResultSet resultSet;
-        User user = null;
-
-        try {
-            statement = connection.prepareStatement(query);
-            statement.setString(1, token);
-            resultSet = statement.executeQuery();
-            user = resultSet.next() ? getObjectFromResultSet(resultSet) : null;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return user;
+        String query = "SELECT U.ID, U.EMAIL, U.TOKEN, U.PASSWORD, U.FIRST_NAME, U.LAST_NAME, R.NAME FROM USERS " +
+                "JOIN USER_TO_ROLE UTR ON U.ID = UTR.FK_USER_ID " +
+                "JOIN ROLES R ON UTR.FK_ROLE_ID = R.NAME " +
+                "WHERE U.TOKEN = ?";
+        return getUser(query, token);
     }
 
     @Override
-    protected User getObjectFromResultSet(ResultSet resultSet) throws SQLException {
+    public User findByEmail(String email) {
+        String query = "SELECT ID, EMAIL, TOKEN, PASSWORD, FIRST_NAME, LAST_NAME FROM USERS WHERE EMAIL = ?";
+        return getUser(query, email);
+    }
+
+    private User getUser(String query, String param) {
+        PreparedStatement statement;
+        ResultSet resultSet;
+        User user = null;
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, param);
+            resultSet = statement.executeQuery();
+            user = resultSet.next() ? getUserFromResultSet(resultSet) : null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    private User getUserWithRoleFromResultSet(ResultSet resultSet) throws SQLException {
+        User user = new User(
+                resultSet.getLong("ID"),
+                resultSet.getString("EMAIL"),
+                resultSet.getString("PASSWORD"),
+                resultSet.getString("FIRST_NAME"),
+                resultSet.getString("LAST_NAME"),
+                resultSet.getString("TOKEN")
+        );
+
+        while (!resultSet.isAfterLast()) {
+            Role role = Role.of(resultSet.getString(7));
+            user.addRole(role);
+            resultSet.next();
+        }
+        return null;
+    }
+
+    private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
         return new User(
-                resultSet.getLong(1),
-                resultSet.getString(2),
-                resultSet.getString(3),
-                resultSet.getString(4),
-                resultSet.getString(5),
-                resultSet.getString(6));
+                resultSet.getLong("ID"),
+                resultSet.getString("EMAIL"),
+                resultSet.getString("PASSWORD"),
+                resultSet.getString("FIRST_NAME"),
+                resultSet.getString("LAST_NAME"),
+                resultSet.getString("TOKEN")
+        );
     }
 }

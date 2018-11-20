@@ -1,30 +1,17 @@
 package company.model;
 
-import company.metadata.ColumnName;
-import company.metadata.TableName;
-
-import java.util.Objects;
-
-@TableName("products")
-public class Product extends AbstractModel {
+public class Product {
 
     private Long id;
-
-    @ColumnName("NAME")
     private String name;
-
-    @ColumnName("PRICE")
     private double price;
-
-    @ColumnName("DESCRIPTION")
     private String description;
-
-    @ColumnName("FK_CATEGORIES")
     private Category category;
 
+    public Product() {
+    }
 
     public Product(String name, double price, String description) {
-        this.id = null;
         this.name = name;
         this.price = price;
         this.description = description;
@@ -35,14 +22,6 @@ public class Product extends AbstractModel {
         this.name = name;
         this.price = price;
         this.description = description;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 
     public Long getId() {
@@ -75,6 +54,14 @@ public class Product extends AbstractModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     @Override

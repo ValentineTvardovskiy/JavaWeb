@@ -21,21 +21,6 @@
             crossorigin="anonymous"></script>
 
     <style>
-        html,
-        body {
-            height: 100%;
-        }
-
-        body {
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-align: center;
-            align-items: center;
-            padding-top: 40px;
-            padding-bottom: 40px;
-            background-color: #f5f5f5;
-        }
-
         .form-signin {
             width: 100%;
             max-width: 330px;
@@ -65,7 +50,6 @@
             border-top-left-radius: 0;
             border-top-right-radius: 0;
         }
-
         html {
             font-size: 14px;
         }
@@ -74,15 +58,12 @@
                 font-size: 16px;
             }
         }
-
         .masthead {
             margin-bottom: 2rem;
         }
-
         .masthead-brand {
             margin-bottom: 0;
         }
-
         .nav-masthead .nav-link {
             padding: .25rem 0;
             font-weight: 700;
@@ -90,21 +71,17 @@
             background-color: transparent;
             border-bottom: .25rem solid transparent;
         }
-
         .nav-masthead .nav-link:hover,
         .nav-masthead .nav-link:focus {
             border-bottom-color: rgba(255, 255, 255, .25);
         }
-
         .nav-masthead .nav-link + .nav-link {
             margin-left: 1rem;
         }
-
         .nav-masthead .active {
             color: #fff;
             border-bottom-color: #fff;
         }
-
         @media (min-width: 48em) {
             .masthead-brand {
                 float: left;
@@ -126,13 +103,13 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/servlet/home">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/servlet/categories">Categories</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled" href="#">Disabled</a>
+                <a class="nav-link disabled" href="${pageContext.request.contextPath}/servlet/admin">Admin Page</a>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
@@ -145,7 +122,8 @@
         </ul>
         <c:choose>
             <c:when test="${user != null}">
-                <div style="color:white" class="mr-5">Hello ${user.firstName}</div>
+                <div style="color:white" class="mr-3">Hello ${user.firstName}</div>
+                <a class="form-inline my-2 my-lg-0 btn btn-outline-primary mr-3" href="<c:url value="/servlet/logout"/>">Logout</a>
             </c:when>
             <c:otherwise>
                 <a class="form-inline my-2 my-lg-0 btn btn-outline-primary mr-3" href="<c:url value="/servlet/register"/>">Sign up</a>

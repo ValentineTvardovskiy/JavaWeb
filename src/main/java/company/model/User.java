@@ -3,24 +3,15 @@ package company.model;
 import java.util.HashSet;
 import java.util.Set;
 
-public class User extends AbstractModel {
+public class User {
+
     private Long id;
     private String email;
-
     private String token;
     private String password;
     private String firstName;
     private String lastName;
     private Set<Role> roles = new HashSet<>();
-
-    public User(Long id) {
-        this.id = id;
-    }
-
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
 
     public User(Long id, String email, String token, String password, String firstName, String lastName) {
         this.id = id;
@@ -31,12 +22,9 @@ public class User extends AbstractModel {
         this.lastName = lastName;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
     public Long getId() {
@@ -87,8 +75,15 @@ public class User extends AbstractModel {
         this.lastName = lastName;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     public void addRole(Role role) {
         this.roles.add(role);
     }
-
 }

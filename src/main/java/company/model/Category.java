@@ -1,22 +1,14 @@
 package company.model;
 
-import company.metadata.ColumnName;
-import company.metadata.TableName;
-
 import java.util.List;
 
-@TableName("categories")
-public class Category extends AbstractModel{
-    private Long id;
+public class Category {
 
-    @ColumnName("CATEGORY_NAME")
+    private Long id;
     private String name;
     private List<Product> products;
 
-
-    public Category(Long id, String name) {
-        this.id = id;
-        this.name = name;
+    public Category() {
     }
 
     public Category(Long id, String name, List<Product> products) {
@@ -29,12 +21,24 @@ public class Category extends AbstractModel{
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public List<Product> getProducts() {
         return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     @Override

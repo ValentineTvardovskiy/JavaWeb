@@ -4,10 +4,11 @@ import company.dao.UserDao;
 import company.model.Role;
 import company.model.User;
 
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+
+import static company.model.Role.RoleName.USER;
 
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
@@ -15,6 +16,7 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserDao userDao) {
         this.userDao = userDao;
     }
+
 
     @Override
     public User addUser(User user) {
@@ -26,7 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private Role getDefaultRole() {
-        return Role.of(Role.RoleName.USER);
+        return Role.of(USER.toString());
     }
 
     @Override
@@ -37,7 +39,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean validatePassword(User user, String password) {
         boolean result = false;
-
         if (user != null) {
             String hashedPassword = hashPassword(password);
             result = hashedPassword.equals(user.getPassword());
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService {
         byte[] encodedHash = null;
         try {
             digest = MessageDigest.getInstance("SHA-256");
-            encodedHash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            encodedHash = digest.digest(password.getBytes());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

@@ -15,14 +15,26 @@
     </servlet-mapping>
 
     <filter>
+        <filter-name>login-register-filter</filter-name>
+        <filter-class>company.web.filters.LoginRegisterFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>login-register-filter</filter-name>
+        <servlet-name>main</servlet-name>
+    </filter-mapping>
+
+    <filter>
         <filter-name>user-filter</filter-name>
-        <filter-class>company.web.UserFilter</filter-class>
+        <filter-class>company.web.filters.UserFilter</filter-class>
     </filter>
 
     <filter-mapping>
         <filter-name>user-filter</filter-name>
         <servlet-name>main</servlet-name>
     </filter-mapping>
+
+
 
 
 </web-app>

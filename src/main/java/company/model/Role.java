@@ -9,8 +9,12 @@ public class Role {
         this.roleName = roleName;
     }
 
-    public static Role of(RoleName roleName) {
-        return new Role(roleName);
+    public RoleName getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(RoleName roleName) {
+        this.roleName = roleName;
     }
 
     public User getUser() {
@@ -21,15 +25,11 @@ public class Role {
         this.user = user;
     }
 
+    public static Role of(String roleName) {
+        return new Role(RoleName.valueOf(roleName));
+    }
+
     public enum RoleName {
         USER, ADMIN
-    }
-
-    public RoleName getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(RoleName roleName) {
-        this.roleName = roleName;
     }
 }

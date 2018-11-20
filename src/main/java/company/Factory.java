@@ -1,10 +1,13 @@
 package company;
 
 import company.controller.*;
+import company.controller.admin.GetAllCategoriesAdminController;
 import company.dao.CategoryDao;
 import company.dao.CategoryDaoImpl;
 import company.dao.ProductDaoImpl;
 import company.dao.UserDaoImpl;
+import company.service.ProductService;
+import company.service.ProductServiceImpl;
 import company.service.UserServiceImpl;
 
 import java.sql.Connection;
@@ -55,6 +58,7 @@ public class Factory {
         return new UserServiceImpl(getUserDao());
     }
 
+
     public static RegisterController getRegisterController() {
         return new RegisterController(getUserService());
     }
@@ -67,7 +71,12 @@ public class Factory {
         return new ProductDaoImpl(connection);
     }
 
-    public static GetProductByIdController getGetProductByIdController() {
+    public static GetProductByIdController getProductByIdController() {
         return new GetProductByIdController(getProductDaoImpl(connection));
     }
+
+    public static Controller getLogoutController() {
+        return new LogoutController();
+    }
+
 }

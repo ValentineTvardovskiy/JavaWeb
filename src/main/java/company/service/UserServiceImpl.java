@@ -4,6 +4,7 @@ import company.dao.UserDao;
 import company.model.Role;
 import company.model.User;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
@@ -11,24 +12,19 @@ import java.util.UUID;
 import static company.model.Role.RoleName.USER;
 
 public class UserServiceImpl implements UserService {
+
     private final UserDao userDao;
 
     public UserServiceImpl(UserDao userDao) {
         this.userDao = userDao;
     }
 
-
     @Override
     public User addUser(User user) {
         String hashedPassword = hashPassword(user.getPassword());
         user.setPassword(hashedPassword);
         user.setToken(getToken());
-        user.addRole(getDefaultRole());
         return userDao.addUser(user);
-    }
-
-    private Role getDefaultRole() {
-        return Role.of(USER.toString());
     }
 
     @Override
@@ -39,6 +35,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean validatePassword(User user, String password) {
         boolean result = false;
+
         if (user != null) {
             String hashedPassword = hashPassword(password);
             result = hashedPassword.equals(user.getPassword());
@@ -51,11 +48,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private String hashPassword(String password) {
-        MessageDigest digest = null;
+        MessageDigest digest;
         byte[] encodedHash = null;
         try {
             digest = MessageDigest.getInstance("SHA-256");
-            encodedHash = digest.digest(password.getBytes());
+            encodedHash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -70,5 +67,9 @@ public class UserServiceImpl implements UserService {
             hexString.append(hex);
         }
         return hexString.toString();
+    }
+
+    private Role getDefaultRole() {
+        return Role.of(USER.toString());
     }
 }

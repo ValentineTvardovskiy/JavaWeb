@@ -2,7 +2,6 @@ package company.web.filters;
 
 
 import company.dao.UserDao;
-import company.model.Role;
 import company.model.User;
 
 import javax.servlet.*;
@@ -13,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static company.Factory.getUserDao;
-import static company.web.filters.UserFilter.getCookieName;
+import static company.web.filters.UserFilter.COOKIE_NAME;
 
 public class LoginRegisterFilter implements Filter {
 
@@ -28,20 +27,20 @@ public class LoginRegisterFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) servletRequest;
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) request;
         Cookie[] cookies = req.getCookies();
         String token = null;
         User user = null;
 
         if (cookies == null) {
-            filterChain.doFilter(servletRequest, servletResponse);
+            chain.doFilter(request, response);
             return;
         }
 
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(getCookieName())) {
-                token = cookie.getValue();
+        for (Cookie c : cookies) {
+            if (c.getName().equals(COOKIE_NAME)) {
+                token = c.getValue();
             }
         }
 
@@ -51,9 +50,9 @@ public class LoginRegisterFilter implements Filter {
 
         if (user != null && uriSet.contains(req.getRequestURI())) {
             req.setAttribute("user", user);
-            req.getRequestDispatcher("/WEB-INF/views/home.jsp").forward(servletRequest, servletResponse);
+            request.getRequestDispatcher("/WEB-INF/views/home.jsp").forward(request, response);
         } else {
-            filterChain.doFilter(servletRequest, servletResponse);
+            chain.doFilter(request, response);
         }
     }
 
